@@ -7,7 +7,9 @@ import { Icon, Icons } from "@/components/globals/Icons";
 import SignOutButton from "@/components/globals/SignOutButton";
 import FriendRequestsSidebarOptions from "@/components/globals/FriendRequestsSidebarOptions";
 import { fetchRedis } from "@/helpers/redis";
-import Login from "@/app/(auth)/login/page";
+import { getFriendsByUserId } from "@/helpers/get-friends-by-userId";
+import SidebarChatList from "@/components/globals/SidebarChatList";
+import { notFound } from "next/navigation";
 
 interface LayoutProps {
   children: ReactNode;
@@ -31,20 +33,37 @@ const Options: SideBarOption[] = [
 
 const DashboardLayout: FC<LayoutProps> = async ({ children }) => {
   const session = await getServerSession(authOptions);
+  if(!session){
+    notFound();
+  }
+  const friends = await getFriendsByUserId(session?.user?.id);
+  console.log("Friends: ",friends);
 
-  const unseenRequestsCount = (await fetchRedis("smembers",`user:${session?.user?.id}:incoming_friend_requests`) as User[]).length;
+  const unseenRequestsCount = (
+    (await fetchRedis(
+      "smembers",
+      `user:${session?.user?.id}:incoming_friend_requests`
+    )) as User[]
+  ).length;
+
+
   return (
     <div className="w-full flex h-screen">
       <div className="flex h-full w-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
         <Link href={"/dashboard"} className="h-16 flex shrink-0 items-center">
           <Icons.Logo className="h-8 w-auto text-indigo-600" />
         </Link>
-        <div className="text-xs text-gray-400 font-semibold leading-6">
-          Your chats
-        </div>
+        {friends?.length > 0 && (
+          <div className="text-xs text-gray-400 font-semibold leading-6">
+            Your chats
+          </div>
+        )}
+
         <nav className="flex flex-1 flex-col">
           <ul role="list" className="flex flex-1 flex-col gap-y-7">
-            <li>chat a</li>
+            <li>
+              <SidebarChatList friends={friends} sessionId={session.user.id}/>
+            </li>
             <li>
               <div className="text-xs font-semibold leading-6 text-gray-400">
                 Overview
@@ -67,30 +86,37 @@ const DashboardLayout: FC<LayoutProps> = async ({ children }) => {
                     </li>
                   );
                 })}
+                <li>
+                  <FriendRequestsSidebarOptions
+                    sessionId={session?.user?.id!}
+                    initialUnseenRequestsCount={unseenRequestsCount}
+                  />
+                </li>
               </ul>
             </li>
 
-            <li>
-              <FriendRequestsSidebarOptions sessionId={session?.user?.id!} initialUnseenRequestsCount={unseenRequestsCount}/>
-            </li>
-
-
             <li className="-mx-6 mt-auto flex items-center">
-                <div className="flex flex-1 items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900">
-                    <div className="relative h-8 w-8 bg-gray-50">
-                        <Image src={session?.user?.image || ""} fill referrerPolicy="no-referrer" className="rounded-full" alt="Profile Image" />
-                    </div>
-                    <span className="sr-only">Your Profile</span>
-                    <div className="flex flex-col">
-                        <span aria-hidden="true">{session?.user?.name}</span>
-                        <span className="text-xs text-zinc-400" aria-hidden="true">{session?.user?.email}</span>
-                    </div>
+              <div className="flex flex-1 items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-gray-900">
+                <div className="relative h-8 w-8 bg-gray-50">
+                  <Image
+                    src={session?.user?.image || ""}
+                    fill
+                    referrerPolicy="no-referrer"
+                    className="rounded-full"
+                    alt="Profile Image"
+                  />
                 </div>
+                <span className="sr-only">Your Profile</span>
+                <div className="flex flex-col">
+                  <span aria-hidden="true">{session?.user?.name}</span>
+                  <span className="text-xs text-zinc-400" aria-hidden="true">
+                    {session?.user?.email}
+                  </span>
+                </div>
+              </div>
 
-
-                <SignOutButton className="h-full aspect-square" />
+              <SignOutButton className="h-full aspect-square" />
             </li>
-
           </ul>
         </nav>
       </div>
