@@ -12,10 +12,11 @@ export async function POST(request:Request){
         if(!session){
             return Response.json({
                 message: "Unauthorized",
-                status: 401,
+                status: 404,
             });
         }
         const [firstUserId,secondUserId] = chatId.split("--");
+        console.log({firstUserId,secondUserId});
         if(session?.user?.id !== firstUserId && session?.user?.id !== secondUserId){
             return Response.json({
                 message: "Unauthorized",
@@ -25,12 +26,12 @@ export async function POST(request:Request){
 
 
         const friendId = session?.user?.id === firstUserId ? secondUserId : firstUserId;
-        const friendList = await fetchRedis("smembers",`user:${session?.user?.id}:friends`) as string[];
+        const friendList = await fetchRedis("smembers",`user:${session?.user?.id}:friends:`) as string[];
         const isAFriend = friendList.includes(friendId);
-
+        console.log("Backend friends: ",friendList);
         if(!isAFriend){
             return Response.json({
-                message: "Unauthorized",
+                message: "Unauthorized,no friendship",
                 status: 401,
             });
         }

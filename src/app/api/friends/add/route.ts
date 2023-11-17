@@ -20,7 +20,7 @@ export async function POST(request: NextRequest){
             });
         }
         const session = await getServerSession(authOptions);
-        console.log("Backend session: ",session);
+        // console.log("Backend session: ",session);
         if(!session){
             return NextResponse.json({
                 message: "Unauthorized request",

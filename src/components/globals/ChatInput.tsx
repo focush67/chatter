@@ -1,6 +1,6 @@
 "use client";
 
-import { FC,useRef, useState } from 'react';
+import { FC,useEffect,useRef, useState } from 'react';
 import ReactTextareaAutosize from 'react-textarea-autosize';
 import Button from './Button';
 import axios from 'axios';
@@ -21,7 +21,7 @@ const ChatInput: FC<ChatInputProps> = ({chatPartner,chatId}) => {
             text: input,
             chatId
         });
-        if( response.data?.status && response.data.status !== 500 || response.data.status !== 401){
+        if( response.data?.status && response.data.status !== 500 || response.data.status !== 401 || response.status !== 404){
             toast.success("Message sent");
         }
         setInput("");
@@ -33,6 +33,7 @@ const ChatInput: FC<ChatInputProps> = ({chatPartner,chatId}) => {
         setIsLoading(false);
     }
   }
+
   return(
     <div className='border-t border-gray-200 px-4 pt-4 mb-2 sm:mb-0'>
         <div className='relative flex-1 overflow-hiddent rounded-lg shadow-sm ring-inset ring-1 ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600'>

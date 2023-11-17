@@ -7,13 +7,14 @@ import {format} from "date-fns";
 interface MessageComponentProps {
   initialMessages: Message[];
   sessionId: string;
-  chatId: string;
 }
 
 const MessagesComponent: FC<MessageComponentProps> = ({
   initialMessages,
   sessionId,
 }) => {
+  console.log("Initial Messages: ",initialMessages);
+
   const scrollDownRef = useRef<HTMLDivElement | null>(null);
   const [messages, setMessage] = useState<Message[]>(initialMessages);
 

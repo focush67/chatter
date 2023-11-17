@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { id: idToAdd } = z?.object({ id: z?.string() }).parse(body);
     const session = await getServerSession(authOptions);
-    console.log(session);
+    // console.log(session);
     if (!session) {
       return NextResponse.json({
         message: "Unauthenticated Request",

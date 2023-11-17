@@ -6,7 +6,7 @@ import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 import { FC } from "react";
 import Image from "next/image";
-import MessagesComponent from "@/components/globals/MessageComponent";
+import MessageComponent from "@/components/globals/MessageComponent";
 import ChatInput from "@/components/globals/ChatInput";
 interface PageProps {
     params: {
@@ -17,19 +17,19 @@ interface PageProps {
 
 async function getChatMessages(chatId: string) {
     try {
-        console.log("ChatId received in fucntion: ",chatId);
+        // console.log("ChatId received in fucntion: ",chatId);
         const results: string[] = await fetchRedis('zrange',`chat:${chatId}:messages`,0,-1);
 
 
         const dbMessages:Message[] = [];
         for(const msg of results){
             const parsedMessage = JSON.parse(msg);
-            console.log(parsedMessage);
+            // console.log(parsedMessage);
             dbMessages.push(parsedMessage);
         }
 
         const reversedMessages = dbMessages?.reverse();
-        console.log("Results of parsed messages :",reversedMessages);
+        // console.log("Results of parsed messages :",reversedMessages);
         const messages = messageArrayValidator?.parse(reversedMessages);
 
         return messages;
@@ -41,7 +41,7 @@ async function getChatMessages(chatId: string) {
 const SpecificChat : FC<PageProps> = async({params}) => {
 
     const {chatId} = params;
-    console.log("Chat Id: ",chatId);
+    // console.log("Chat Id: ",chatId);
     const session = await getServerSession(authOptions);
     if(!session){
         console.log("Session missing");
@@ -62,8 +62,8 @@ const SpecificChat : FC<PageProps> = async({params}) => {
                 <div className="relative flex items-center space-x-4">
                     <div className="relative">
                         <div className="relative w-8 sm:w-12 h-8 sm:h-12">
-                            {/* <Image fill referrerPolicy="no-referrer" src={chatPartner?.image} alt={`${chatPartner.name} profile picture`} 
-                            className="rounded-full"/> */}
+                            <Image fill referrerPolicy="no-referrer" src={chatPartner?.image} alt={`${chatPartner.name} profile picture`} 
+                            className="rounded-full"/>
                         </div>
                     </div>
                     <div className="flex flex-col leading-tight">
@@ -76,7 +76,7 @@ const SpecificChat : FC<PageProps> = async({params}) => {
                     </div>
                 </div>
             </div>
-            <MessagesComponent initialMessages={initialMessages!} sessionId={session.user.id} chatId={chatId}/>
+            <MessageComponent initialMessages={initialMessages!} sessionId={session.user.id}/>
             <ChatInput chatPartner={chatPartner} chatId={chatId} />
         </div>
     )
