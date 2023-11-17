@@ -45,9 +45,9 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const a = await database.sadd(`user:${session?.user?.id}:friends`,idToAdd);
+    const a = await database.sadd(`user:${session?.user?.id}:friends:`,idToAdd);
 
-    const b = await database.sadd(`user:${idToAdd}:friends:${session?.user?.id}`,session?.user?.id);
+    const b = await database.sadd(`user:${idToAdd}:friends:`,session?.user?.id);
 
     const c = await database.srem(`user:${session?.user?.id}:incoming_friend_requests`,idToAdd);
 

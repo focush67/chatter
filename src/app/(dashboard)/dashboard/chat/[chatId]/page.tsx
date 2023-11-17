@@ -1,11 +1,13 @@
 import { authOptions } from "@/authentication/auth-exports";
 import { fetchRedis } from "@/helpers/redis";
 import { database } from "@/lib/database";
-import { messageArrayValidator } from "@/lib/message";
+import { messageArrayValidator,Message } from "@/lib/message";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 import { FC } from "react";
-
+import Image from "next/image";
+import MessagesComponent from "@/components/globals/MessageComponent";
+import ChatInput from "@/components/globals/ChatInput";
 interface PageProps {
     params: {
         chatId: string,
@@ -15,17 +17,24 @@ interface PageProps {
 
 async function getChatMessages(chatId: string) {
     try {
+        console.log("ChatId received in fucntion: ",chatId);
         const results: string[] = await fetchRedis('zrange',`chat:${chatId}:messages`,0,-1);
-        const dbMessages = results.map((message) => {
-            JSON.parse(message) as Message
-        })
-        const reversedMessages = dbMessages.reverse();
 
-        const messages = messageArrayValidator.parse(reversedMessages);
+
+        const dbMessages:Message[] = [];
+        for(const msg of results){
+            const parsedMessage = JSON.parse(msg);
+            console.log(parsedMessage);
+            dbMessages.push(parsedMessage);
+        }
+
+        const reversedMessages = dbMessages?.reverse();
+        console.log("Results of parsed messages :",reversedMessages);
+        const messages = messageArrayValidator?.parse(reversedMessages);
 
         return messages;
     } catch (error) {
-        notFound();
+        console.log(error);
     }
 }
 
@@ -48,7 +57,28 @@ const SpecificChat : FC<PageProps> = async({params}) => {
     const initialMessages = (await getChatMessages(chatId));
 
     return(
-        <div>Hello specific chat user {params.chatId}</div>
+        <div className="flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]">
+            <div className="flex sm:items-center justify-between py-3 border-b-2 border-gray-200">
+                <div className="relative flex items-center space-x-4">
+                    <div className="relative">
+                        <div className="relative w-8 sm:w-12 h-8 sm:h-12">
+                            {/* <Image fill referrerPolicy="no-referrer" src={chatPartner?.image} alt={`${chatPartner.name} profile picture`} 
+                            className="rounded-full"/> */}
+                        </div>
+                    </div>
+                    <div className="flex flex-col leading-tight">
+                        <div className="text-xl flex items-center">
+                            <span className="text-gray-700 font-semibold mr-3">{chatPartner.name}</span>
+                        </div>
+                        <span className="text-sm text-gray-600">
+                            {chatPartner.email}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <MessagesComponent initialMessages={initialMessages!} sessionId={session.user.id} chatId={chatId}/>
+            <ChatInput chatPartner={chatPartner} chatId={chatId} />
+        </div>
     )
 }
 

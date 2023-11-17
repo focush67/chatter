@@ -37,7 +37,6 @@ const DashboardLayout: FC<LayoutProps> = async ({ children }) => {
     notFound();
   }
   const friends = await getFriendsByUserId(session?.user?.id);
-  console.log("Friends: ",friends);
 
   const unseenRequestsCount = (
     (await fetchRedis(
@@ -46,7 +45,7 @@ const DashboardLayout: FC<LayoutProps> = async ({ children }) => {
     )) as User[]
   ).length;
 
-
+      console.log(`Friends for ${session?.user?.email}`,friends);
   return (
     <div className="w-full flex h-screen">
       <div className="flex h-full w-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
