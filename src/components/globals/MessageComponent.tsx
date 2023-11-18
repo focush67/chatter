@@ -1,22 +1,47 @@
 "use client";
 
-import { FC, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { Message } from "@/lib/message";
-import { cn } from "@/lib/utilities";
+import { cn, toPusherKey } from "@/lib/utilities";
 import {format} from "date-fns";
+import { pusherClient } from "@/lib/pusher";
 interface MessageComponentProps {
   initialMessages: Message[];
   sessionId: string;
+  chatId: string;
 }
 
 const MessagesComponent: FC<MessageComponentProps> = ({
   initialMessages,
   sessionId,
+  chatId
 }) => {
   console.log("Initial Messages: ",initialMessages);
 
   const scrollDownRef = useRef<HTMLDivElement | null>(null);
   const [messages, setMessage] = useState<Message[]>(initialMessages);
+
+  useEffect(()=>{
+    console.log("Mounting component");
+    pusherClient.subscribe(toPusherKey(`chat:${chatId}`));
+
+    console.log("Listening to", `chat:${chatId}`);
+
+    console.log("Pusher Client Initiated");
+    
+    const messageHandler = (message:Message) => {
+      console.log("Function got called");
+      setMessage((prev) => [message,...prev])
+    }
+
+    pusherClient.bind(`incoming_messages`,messageHandler);
+
+    return () => {
+      console.log("Unmounting component");
+      pusherClient.unsubscribe(toPusherKey(`chat:${chatId}`));
+      pusherClient.bind(`incoming_messages`,messageHandler);
+    }
+  },[])
 
   const formatTimeStamp = (timestamp:number) => {
     return format(timestamp,"HH:mm");

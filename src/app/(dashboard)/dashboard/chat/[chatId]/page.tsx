@@ -76,7 +76,7 @@ const SpecificChat : FC<PageProps> = async({params}) => {
                     </div>
                 </div>
             </div>
-            <MessageComponent initialMessages={initialMessages!} sessionId={session.user.id}/>
+            <MessageComponent chatId={chatId} initialMessages={initialMessages!} sessionId={session.user.id}/>
             <ChatInput chatPartner={chatPartner} chatId={chatId} />
         </div>
     )
