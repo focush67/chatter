@@ -2,6 +2,7 @@ import { authOptions } from "@/authentication/auth-exports";
 import FriendRequests from "@/components/globals/FriendRequests";
 import { fetchRedis } from "@/helpers/redis";
 import {getServerSession} from "next-auth";
+
 const Requests = async({}) => {
     const session = await getServerSession(authOptions);
     if(!session){
@@ -14,15 +15,15 @@ const Requests = async({}) => {
 
 
     const incomingFriendRequests = await Promise.all(incomingSenderIds.map(async(senderId) => {
-        const sender = await fetchRedis("get",`user:${senderId}`) as string;
-        const parsedSender = JSON.parse(sender);
+        const sender = await fetchRedis("get",`user:${senderId}`) as string;        
+        const parsedSender = JSON.parse(sender || "");
         return {
             senderId,
             senderEmail: parsedSender?.email,
         }
     }))
 
-    // console.log(incomingFriendRequests);
+    console.log("Incoming friend requests",incomingFriendRequests);
     
     return(
         <section className="pt-8">

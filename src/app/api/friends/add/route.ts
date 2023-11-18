@@ -5,6 +5,8 @@ import {getServerSession} from "next-auth";
 import { fetchRedis } from "@/helpers/redis";
 import { database } from "@/lib/database";
 import {z} from "zod";
+import { pusherServer } from "@/lib/pusher";
+import { toPusherKey } from "@/lib/utilities";
 export async function POST(request: NextRequest){
     try {
         const body = await request.json();
@@ -54,6 +56,12 @@ export async function POST(request: NextRequest){
                 extra: isAlreadyFriend,
             })
         }        
+
+        console.log("Trigger initiated at backend");
+        pusherServer.trigger(toPusherKey(`user:${idToAdd}:incoming_friend_requests`),'incoming_friend_requests',{
+            senderId: session?.user?.id,
+            senderEmail: session?.user?.email
+        })
 
         database.sadd(`user:${idToAdd}:incoming_friend_requests`,session.user.id);
 

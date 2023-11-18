@@ -9,6 +9,7 @@ const Dashboard:FC<PageProps> = async({}) => {
             {
                 `${session?.user?.email || "No session"}`
             }
+
         </div>
     )
 }

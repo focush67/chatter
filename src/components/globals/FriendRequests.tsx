@@ -2,8 +2,11 @@
 
 import axios from "axios";
 import { Check, UserPlus, X } from "lucide-react";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { pusherClient } from "@/lib/pusher";
+import { toPusherKey } from "@/lib/utilities";
+import toast from "react-hot-toast";
 interface FriendRequestsProps {
   initialIncomingRequests: IncomingFriendRequestsType[];
   sessionId: string;
@@ -37,12 +40,40 @@ const FriendRequests: FC<FriendRequestsProps> = ({
     router.refresh();
   }
 
+  const friendRequestHandler = () => {
+    console.log("Friend request generated");
+  }
+
+  useEffect(()=>{
+    console.log("Mounting component");
+    pusherClient.subscribe(toPusherKey(`user:${sessionId}:incoming_friend_requests`));
+
+    console.log("Listening to", `user:${sessionId}:incoming_friend_requests`);
+
+    console.log("Pusher Client Initiated");
+    
+    const friendRequestsHandler = ({senderId,senderEmail}:IncomingFriendRequestsType) => {
+      console.log("Function got called");
+      setIncoming((prev) => [...prev,{senderId,senderEmail}]);
+    }
+
+    pusherClient.bind(`incoming_friend_requests`,friendRequestsHandler);
+
+    return () => {
+      console.log("Unmounting component");
+      pusherClient.unsubscribe(
+        toPusherKey(`user:${sessionId}:incoming_friend_requests`)
+      )
+      pusherClient.unbind(`incoming_friend_requests`,friendRequestHandler);
+    }
+  },[sessionId])
+
   return (
     <>
       {incoming.length === 0 ? (
         <p className="text-sm text-zinc-500">Nothing to show here</p>
       ) : (
-        incoming.map((request) => (
+        incoming.map((request,index) => (
           <div key={request.senderId} className="flex gap-4 items-center">
             <UserPlus className="text-black" />
             <p className="font-medium text-lg">{request.senderEmail}</p>
