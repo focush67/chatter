@@ -58,6 +58,12 @@ export async function POST(request:Request){
             member: JSON.stringify(message)
         })
 
+        pusherServer.trigger(toPusherKey(`user:${friendId}:chats`) , 'new_message' , {
+            ...message,
+            senderImg: parsedSender.image,
+            senderName: parsedSender.name
+        })
+
         return Response.json({
             message: "Successfully posted message",
             status: 200,

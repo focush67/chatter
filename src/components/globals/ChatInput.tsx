@@ -15,6 +15,11 @@ const ChatInput: FC<ChatInputProps> = ({chatPartner,chatId}) => {
   const[input,setInput] = useState<string>("");
   const [isLoading,setIsLoading] = useState<boolean>(false);
   const sendMessage = async() => {
+    if(!input || input.length === 0)
+    {
+        toast.error("Empty Message");
+        return;
+    }
     setIsLoading(true);
     try {
         const response = await axios.post(`/api/message/send`,{

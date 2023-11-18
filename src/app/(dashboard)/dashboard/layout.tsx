@@ -119,8 +119,7 @@ const DashboardLayout: FC<LayoutProps> = async ({ children }) => {
           </ul>
         </nav>
       </div>
-
-      {children}
+          <aside className="container max-h-screen py-16 md:py-12 w-full ">{children}</aside>
     </div>
   );
 };

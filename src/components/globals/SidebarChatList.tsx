@@ -1,11 +1,21 @@
 "use client";
 
-import { ChatHrefConstructor } from "@/lib/utilities";
+import { pusherClient } from "@/lib/pusher";
+import { ChatHrefConstructor, toPusherKey } from "@/lib/utilities";
 import { usePathname, useRouter } from "next/navigation";
 import { FC, useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import UnseenChatsToast from "./UnseenChatsToast";
+import Image from "next/image";
+
 interface SidebarChatListProps {
   friends: User[];
   sessionId: string;
+}
+
+interface ExtendedMessage extends Message{
+  senderImg: string;
+  senderName: string;
 }
 
 const SidebarChatList: FC<SidebarChatListProps> = ({ friends, sessionId }) => {
@@ -24,10 +34,42 @@ const SidebarChatList: FC<SidebarChatListProps> = ({ friends, sessionId }) => {
     }
   }, [pathname]);
 
+
+  useEffect(()=>{
+    pusherClient.subscribe(toPusherKey(`user:${sessionId}:chats`));
+    pusherClient.subscribe(toPusherKey(`user:${sessionId}:friends`));
+
+    const friendHandler = () => {
+      router.refresh();
+    }
+
+    const chatHandler = (message:ExtendedMessage) => {
+      const isToBeNotified = pathname !== `dashboard/chat/${ChatHrefConstructor(sessionId,message.senderId)}`;
+
+      if(!isToBeNotified) return;
+
+      // Ring a notification
+
+      toast.custom((t) => (
+        <UnseenChatsToast t={t} sessionId={sessionId} senderId={message.senderId} senderImg={message.senderImg} senderMessage={message.text} senderName={message.senderName}/>
+      ))
+
+      setUnseen((prev) => [...prev,message]);
+    }
+
+    pusherClient.bind(`new_message` , chatHandler);
+    pusherClient.bind(`new_friend`,friendHandler);
+
+    return () => {
+      pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:chats`));
+    pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:friends`));
+    }
+  },[sessionId,pathname,router])
+
   return (
     <>
     <ul role="list" className="max-h-[25rem] overflow-y-auto -mx-2 space-y-1">
-      {friends?.sort().map((friend) => {
+      {friends.sort().map((friend) => {
         const unseenMessagesCount = unseen?.filter((msg) => {
           return msg.senderId === friend.id;
         }).length;
@@ -36,10 +78,7 @@ const SidebarChatList: FC<SidebarChatListProps> = ({ friends, sessionId }) => {
           <li key={friend.id} style={{
             display:"flex"
           }}>
-            <img src={friend.image} alt="" style={{
-                borderRadius:"50%",
-                width:"3rem",
-            }}/>
+            <Image src={friend.image} alt={`${friend.name}`} referrerPolicy="no-referrer" className="rounded-full" width={40} height={40} layout="fixed"/>
             <a
               href={`/dashboard/chat/${ChatHrefConstructor(
                 sessionId,
