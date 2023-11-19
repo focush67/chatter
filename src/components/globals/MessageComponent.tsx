@@ -16,28 +16,28 @@ const MessagesComponent: FC<MessageComponentProps> = ({
   sessionId,
   chatId
 }) => {
-  console.log("Initial Messages: ",initialMessages);
+  // console.log("Initial Messages: ",initialMessages);
 
   const scrollDownRef = useRef<HTMLDivElement | null>(null);
   const [messages, setMessage] = useState<Message[]>(initialMessages);
 
   useEffect(()=>{
-    console.log("Mounting component");
+    // console.log("Mounting component");
     pusherClient.subscribe(toPusherKey(`chat:${chatId}`));
 
-    console.log("Listening to", `chat:${chatId}`);
+    // console.log("Listening to", `chat:${chatId}`);
 
-    console.log("Pusher Client Initiated");
+    // console.log("Pusher Client Initiated");
     
     const messageHandler = (message:Message) => {
-      console.log("Function got called");
+      // console.log("Function got called");
       setMessage((prev) => [message,...prev])
     }
 
     pusherClient.bind(`incoming_messages`,messageHandler);
 
     return () => {
-      console.log("Unmounting component");
+      // console.log("Unmounting component");
       pusherClient.unsubscribe(toPusherKey(`chat:${chatId}`));
       pusherClient.unbind(`incoming_messages`,messageHandler);
     }
