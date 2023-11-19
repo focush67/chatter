@@ -39,7 +39,7 @@ const MessagesComponent: FC<MessageComponentProps> = ({
     return () => {
       console.log("Unmounting component");
       pusherClient.unsubscribe(toPusherKey(`chat:${chatId}`));
-      pusherClient.bind(`incoming_messages`,messageHandler);
+      pusherClient.unbind(`incoming_messages`,messageHandler);
     }
   },[chatId])
 
