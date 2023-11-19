@@ -11,6 +11,7 @@ import { getFriendsByUserId } from "@/helpers/get-friends-by-userId";
 import SidebarChatList from "@/components/globals/SidebarChatList";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Mobile from "@/components/globals/Mobile";
 
 export const metadata:Metadata = {
   title: "Dashboard",
@@ -21,7 +22,7 @@ interface LayoutProps {
   children: ReactNode;
 }
 
-interface SideBarOption {
+export interface SideBarOption {
   id: number;
   name: string;
   href: string;
@@ -54,7 +55,10 @@ const DashboardLayout: FC<LayoutProps> = async ({ children }) => {
       // console.log(`Friends for ${session?.user?.email}`,friends);
   return (
     <div className="w-full flex h-screen">
-      <div className="flex h-full w-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
+      <div className="md:hidden">
+        <Mobile friends={friends} session={session} sidebarOptions={Options} unseenRequestsCount={unseenRequestsCount} />
+      </div>
+      <div className="hidden md:flex h-full w-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
         <Link href={"/dashboard"} className="h-16 flex shrink-0 items-center">
           <Icons.Logo className="h-8 w-auto text-indigo-600" />
         </Link>
