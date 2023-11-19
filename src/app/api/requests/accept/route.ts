@@ -4,6 +4,8 @@ import { z } from "zod";
 import {getServerSession} from "next-auth";
 import { fetchRedis } from "@/helpers/redis";
 import { database } from "@/lib/database";
+import { pusherServer } from "@/lib/pusher";
+import { toPusherKey } from "@/lib/utilities";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -44,6 +46,10 @@ export async function POST(request: NextRequest) {
         status: 404,
       });
     }
+
+    // notify user 
+
+    pusherServer.trigger(toPusherKey(`user:${idToAdd}:friends`),'new_friend',{});
 
     const a = await database.sadd(`user:${session?.user?.id}:friends:`,idToAdd);
 

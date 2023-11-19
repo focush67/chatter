@@ -28,6 +28,7 @@ const FriendRequests: FC<FriendRequestsProps> = ({
     });
     console.log(response.data);
     setIncoming((prev) => prev.filter((request) => request.senderId !== senderId));
+    toast.success("Added friend");
     router.refresh();
   }
 
@@ -37,6 +38,7 @@ const FriendRequests: FC<FriendRequestsProps> = ({
     });
     console.log(response.data);
     setIncoming((prev) => prev.filter((request) => request.senderId !== senderId));
+    toast.error("Denied friend");
     router.refresh();
   }
 
