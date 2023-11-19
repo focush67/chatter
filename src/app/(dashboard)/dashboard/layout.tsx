@@ -10,6 +10,12 @@ import { fetchRedis } from "@/helpers/redis";
 import { getFriendsByUserId } from "@/helpers/get-friends-by-userId";
 import SidebarChatList from "@/components/globals/SidebarChatList";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+
+export const metadata:Metadata = {
+  title: "Dashboard",
+  description: "User Dashboard"
+}
 
 interface LayoutProps {
   children: ReactNode;

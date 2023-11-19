@@ -2,6 +2,12 @@ import { authOptions } from "@/authentication/auth-exports";
 import FriendRequests from "@/components/globals/FriendRequests";
 import { fetchRedis } from "@/helpers/redis";
 import {getServerSession} from "next-auth";
+import type { Metadata } from "next";
+
+export const metadata:Metadata = {
+    title: "Friend Requests",
+    description: "Friend Requests",
+}
 
 const Requests = async({}) => {
     const session = await getServerSession(authOptions);

@@ -8,6 +8,7 @@ import { FC } from "react";
 import Image from "next/image";
 import MessageComponent from "@/components/globals/MessageComponent";
 import ChatInput from "@/components/globals/ChatInput";
+
 interface PageProps {
     params: {
         chatId: string,
