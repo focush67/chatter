@@ -30,7 +30,7 @@ const MessagesComponent: FC<MessageComponentProps> = ({
     // console.log("Pusher Client Initiated");
     
     const messageHandler = (message:Message) => {
-      // console.log("Function got called");
+      console.log("New Messages may have been received");
       setMessage((prev) => [message,...prev])
     }
 

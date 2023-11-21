@@ -14,22 +14,22 @@ const FriendRequestsSidebarOptions: FC<FriendRequestsSidebarOptionsProps> = ({se
     const [unseenRequests, setunseenRequests] = useState<number>(initialUnseenRequestsCount);
     
     useEffect(()=>{
-        console.log("Mounting component");
+        // console.log("Mounting component");
         pusherClient.subscribe(toPusherKey(`user:${sessionId}:incoming_friend_requests`));
     
-        console.log("Listening to", `user:${sessionId}:incoming_friend_requests`);
+        // console.log("Listening to", `user:${sessionId}:incoming_friend_requests`);
     
-        console.log("Pusher Client Initiated");
+        // console.log("Pusher Client Initiated");
         
         const friendRequestsHandler = () => {
-          console.log("Function got called");
+          console.log("Friend request handler was called");
           setunseenRequests((prev) => prev+1);
         }
     
         pusherClient.bind(`incoming_friend_requests`,friendRequestsHandler);
     
         return () => {
-          console.log("Unmounting component");
+          // console.log("Unmounting component");
           pusherClient.unsubscribe(
             toPusherKey(`user:${sessionId}:incoming_friend_requests`)
           )

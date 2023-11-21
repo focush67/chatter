@@ -47,7 +47,7 @@ const FriendRequests: FC<FriendRequestsProps> = ({
   }
 
   useEffect(()=>{
-    console.log("Mounting component");
+    // console.log("Mounting component");
     pusherClient.subscribe(toPusherKey(`user:${sessionId}:incoming_friend_requests`));
 
     console.log("Listening to", `user:${sessionId}:incoming_friend_requests`);
@@ -55,14 +55,14 @@ const FriendRequests: FC<FriendRequestsProps> = ({
     console.log("Pusher Client Initiated");
     
     const friendRequestsHandler = ({senderId,senderEmail}:IncomingFriendRequestsType) => {
-      console.log("Function got called");
+      console.log("New friend requests may have been received");
       setIncoming((prev) => [...prev,{senderId,senderEmail}]);
     }
 
     pusherClient.bind(`incoming_friend_requests`,friendRequestsHandler);
 
     return () => {
-      console.log("Unmounting component");
+      // console.log("Unmounting component");
       pusherClient.unsubscribe(
         toPusherKey(`user:${sessionId}:incoming_friend_requests`)
       )
