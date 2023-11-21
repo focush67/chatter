@@ -2,7 +2,7 @@ import { authOptions } from "@/authentication/auth-exports";
 import { fetchRedis } from "@/helpers/redis";
 import { database } from "@/lib/database";
 import { Message, messageValidator } from "@/lib/message";
-import { pusherClient, pusherServer } from "@/lib/pusher";
+import { pusherServer } from "@/lib/pusher";
 import { toPusherKey } from "@/lib/utilities";
 import { nanoid } from "nanoid";
 import { getServerSession } from "next-auth";
@@ -52,13 +52,13 @@ export async function POST(request:Request){
 
         // live chat feature here
 
-        pusherServer.trigger(toPusherKey(`chat:${chatId}`),"incoming_messages",message)
+        await pusherServer.trigger(toPusherKey(`chat:${chatId}`),"incoming_messages",message)
         await database.zadd(`chat:${chatId}:messages`,{
             score: timestamp,
             member: JSON.stringify(message)
         })
 
-        pusherServer.trigger(toPusherKey(`user:${friendId}:chats`) , 'new_message' , {
+        await pusherServer.trigger(toPusherKey(`user:${friendId}:chats`) , 'new_message' , {
             ...message,
             senderImg: parsedSender.image,
             senderName: parsedSender.name

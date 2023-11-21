@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
 
     // notify user 
 
-    pusherServer.trigger(toPusherKey(`user:${idToAdd}:friends`),'new_friend',{});
+    await pusherServer.trigger(toPusherKey(`user:${idToAdd}:friends`),'new_friend',{});
 
     const a = await database.sadd(`user:${session?.user?.id}:friends:`,idToAdd);
 

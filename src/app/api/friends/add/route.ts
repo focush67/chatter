@@ -58,7 +58,7 @@ export async function POST(request: NextRequest){
         }        
 
         console.log("Trigger initiated at backend");
-        pusherServer.trigger(toPusherKey(`user:${idToAdd}:incoming_friend_requests`),'incoming_friend_requests',{
+        await pusherServer.trigger(toPusherKey(`user:${idToAdd}:incoming_friend_requests`),'incoming_friend_requests',{
             senderId: session?.user?.id,
             senderEmail: session?.user?.email
         })
