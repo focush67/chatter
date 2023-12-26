@@ -7,7 +7,7 @@ interface PageProps {}
 const Add: FC<PageProps> = ({}) => {
     return(
         <section className="pt-8">
-            <h1 className="text-bold text-5xl mb-8">Add a Friend</h1>
+            <h1 className="text-bold text-5xl mb-8 text-white">Add a Friend</h1>
             <AddFriendButton/>
         </section>
     )

@@ -34,7 +34,7 @@ const Mobile: FC<MobileProps> = ({
     setOpen(false);
   }, [pathName]);
   return (
-    <div className="fixed bg-zinc-200 border-b border-zinc-200 top-0 inset-x-0 py-2 px-4">
+    <div className="fixed bg-gray-00 border-b border-zinc-200 top-0 inset-x-0 py-2 px-4">
       <div className="flex justify-between w-full items-center">
         <Link
           href="/dashboard"

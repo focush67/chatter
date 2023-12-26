@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { getFriendsByUserId } from "@/helpers/get-friends-by-userId";
 import { fetchRedis } from "@/helpers/redis";
 import { ChatHrefConstructor } from "@/lib/utilities";
-import { ChevronRight, Loader2 } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -27,7 +27,7 @@ const Dashboard: FC = async () => {
 
       console.log("Last Message Raw: ",lastMessageRaw);
       const lastMessage = lastMessageRaw ? JSON.parse(lastMessageRaw || "") as Message : console.log("Error in JSON Parsing");
-      
+
       return {
         ...friend,
         lastMessage,
@@ -37,15 +37,15 @@ const Dashboard: FC = async () => {
 
   // console.log("Friend with last message: ",friendsWithLastMessages);
   return (
-    <div className="py-12 container">
-      <h1 className="font-bold text-5xl mb-8">Recent</h1>
+    <div className="py-12 container bg-black h-[100%] rounded-lg">
+      <h1 className="font-bold text-5xl mb-8 text-white">Recent</h1>
       {friendsWithLastMessages.length === 0 ? (
         <p className="text-sm text-zinc-500">Nothing to show here</p>
       ) : (
         friendsWithLastMessages.map((friend) => (
           <div
             key={friend.id}
-            className="relative bg-zinc-50 border-zinc-200 p-3 rounded-md"
+            className="relative bg-blue-500 border-zinc-200 p-3 rounded-md m-4"
           >
             <div className="absolute right-4 inset-y-0 flex items-center">
               <ChevronRight className="text-zinc-400 h-7 w-7" />
@@ -72,7 +72,7 @@ const Dashboard: FC = async () => {
               <div className="">
                 <h4 className="text-large font-semibold">{friend.name}</h4>
                 <p className="max-w-md mt-1">
-                  <span className="text-zinc-400">
+                  <span className="text-blue-900">
                     {friend.lastMessage?.senderId === session?.user?.id
                       ? "You: "
                       : ""}

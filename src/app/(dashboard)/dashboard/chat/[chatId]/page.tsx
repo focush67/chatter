@@ -58,8 +58,8 @@ const SpecificChat : FC<PageProps> = async({params}) => {
     const initialMessages = (await getChatMessages(chatId));
 
     return(
-        <div className="flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]">
-            <div className="flex sm:items-center justify-between py-3 border-b-2 border-gray-200">
+        <div className="flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)] bg-black p-4">
+            <div className="flex sm:items-center justify-between py-3 border-b-2 border-gray-200 text-white">
                 <div className="relative flex items-center space-x-4">
                     <div className="relative">
                         <div className="relative w-8 sm:w-12 h-8 sm:h-12">
@@ -69,7 +69,7 @@ const SpecificChat : FC<PageProps> = async({params}) => {
                     </div>
                     <div className="flex flex-col leading-tight">
                         <div className="text-xl flex items-center">
-                            <span className="text-gray-700 font-semibold mr-3">{chatPartner.name}</span>
+                            <span className="text-gray-200 font-semibold mr-3">{chatPartner.name}</span>
                         </div>
                         <span className="text-sm text-gray-600">
                             {chatPartner.email}

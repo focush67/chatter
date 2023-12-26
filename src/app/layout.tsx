@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: "Realtime chat application powered by next-js",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+          <Providers>{children}</Providers>
       </body>
     </html>
   );

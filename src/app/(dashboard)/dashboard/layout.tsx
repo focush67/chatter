@@ -13,10 +13,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Mobile from "@/components/globals/Mobile";
 
-export const metadata:Metadata = {
+export const metadata: Metadata = {
   title: "Dashboard",
-  description: "User Dashboard"
-}
+  description: "User Dashboard",
+};
 
 interface LayoutProps {
   children: ReactNode;
@@ -40,7 +40,7 @@ const Options: SideBarOption[] = [
 
 const DashboardLayout: FC<LayoutProps> = async ({ children }) => {
   const session = await getServerSession(authOptions);
-  if(!session){
+  if (!session) {
     notFound();
   }
   const friends = await getFriendsByUserId(session?.user?.id);
@@ -52,15 +52,20 @@ const DashboardLayout: FC<LayoutProps> = async ({ children }) => {
     )) as User[]
   ).length;
 
-      // console.log(`Friends for ${session?.user?.email}`,friends);
+  // console.log(`Friends for ${session?.user?.email}`,friends);
   return (
-    <div className="w-full flex h-screen">
+    <div className="w-full flex h-screen bg-black">
       <div className="md:hidden">
-        <Mobile friends={friends} session={session} sidebarOptions={Options} unseenRequestsCount={unseenRequestsCount} />
+        <Mobile
+          friends={friends}
+          session={session}
+          sidebarOptions={Options}
+          unseenRequestsCount={unseenRequestsCount}
+        />
       </div>
-      <div className="hidden md:flex h-full w-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6">
+      <div className="hidden md:flex h-full w-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-300 bg-purple-100 px-6">
         <Link href={"/dashboard"} className="h-16 flex shrink-0 items-center">
-          <Icons.Logo className="h-8 w-auto text-indigo-600" />
+          <Icons.Logo className="h-10 w-auto text-blue-800" />
         </Link>
         {friends?.length > 0 && (
           <div className="text-xs text-gray-400 font-semibold leading-6">
@@ -71,7 +76,7 @@ const DashboardLayout: FC<LayoutProps> = async ({ children }) => {
         <nav className="flex flex-1 flex-col">
           <ul role="list" className="flex flex-1 flex-col gap-y-7">
             <li>
-              <SidebarChatList friends={friends} sessionId={session.user.id}/>
+              <SidebarChatList friends={friends} sessionId={session.user.id} />
             </li>
             <li>
               <div className="text-xs font-semibold leading-6 text-gray-400">
@@ -81,26 +86,29 @@ const DashboardLayout: FC<LayoutProps> = async ({ children }) => {
                 {Options.map((option) => {
                   const Icon = Icons[option.Icon];
                   return (
-                    <li key={option.id}>
-                      <Link
-                        href={option.href}
-                        className="text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex gap-3 rounded-md padding-2 text-sm leading-6 font-semibold"
-                      >
-                        <span className="text-gray-400 border-gray-200 group-hover:border-indigo-600 group-hover:text-indigo-600 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white">
-                          <Icon className="w-4 h-4" />
-                        </span>
+                    <>
+                      <li key={option.id}>
+                        <Link
+                          href={option.href}
+                          className="text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex gap-3 rounded-md padding-2 text-sm leading-6 font-semibold"
+                        >
+                          <span className="text-gray-400 border-gray-200 group-hover:border-indigo-600 group-hover:text-indigo-600 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white">
+                            <Icon className="w-4 h-4" />
+                          </span>
 
-                        <span className="truncate">{option.name}</span>
-                      </Link>
-                    </li>
+                          <span className="truncate">{option.name}</span>
+                        </Link>
+                      </li>
+
+                      <li>
+                        <FriendRequestsSidebarOptions
+                          sessionId={session?.user?.id!}
+                          initialUnseenRequestsCount={unseenRequestsCount}
+                        />
+                      </li>
+                    </>
                   );
                 })}
-                <li>
-                  <FriendRequestsSidebarOptions
-                    sessionId={session?.user?.id!}
-                    initialUnseenRequestsCount={unseenRequestsCount}
-                  />
-                </li>
               </ul>
             </li>
 
@@ -129,7 +137,9 @@ const DashboardLayout: FC<LayoutProps> = async ({ children }) => {
           </ul>
         </nav>
       </div>
-          <aside className="container max-h-screen py-16 md:py-12 w-full ">{children}</aside>
+      <aside className="container max-h-screen py-16 md:py-12 w-full ">
+        {children}
+      </aside>
     </div>
   );
 };
