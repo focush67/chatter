@@ -90,9 +90,9 @@ const DashboardLayout: FC<LayoutProps> = async ({ children }) => {
                       <li key={option.id}>
                         <Link
                           href={option.href}
-                          className="text-gray-700 hover:text-indigo-600 hover:bg-gray-50 group flex gap-3 rounded-md padding-2 text-sm leading-6 font-semibold"
+                          className="text-black hover:text-indigo-600 hover:bg-gray-50 group flex gap-3 rounded-md padding-2 text-sm leading-6 font-semibold"
                         >
-                          <span className="text-gray-400 border-gray-200 group-hover:border-indigo-600 group-hover:text-indigo-600 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white">
+                          <span className="text-black border-gray-200 group-hover:border-indigo-600 group-hover:text-indigo-600 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium bg-white">
                             <Icon className="w-4 h-4" />
                           </span>
 

@@ -32,7 +32,7 @@ const Requests = async({}) => {
     
     return(
         <section className="pt-8">
-        <h1 className="text-bold text-5xl mb-8">Add a Friend</h1>
+        <h1 className="text-bold text-5xl mb-8 text-white">Add a Friend</h1>
         <div className="flex flex-col gap-4">
             <FriendRequests initialIncomingRequests={incomingFriendRequests} sessionId={session?.user?.id!}/>
         </div>
